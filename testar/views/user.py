@@ -17,7 +17,7 @@ def user_login(data):
     if not user:
         return http_err(404, 'user with given credentials not found')
     if not user.verify_password(data['password']):
-        return http_err(401, 'incorrect password')
+        return http_err(403, 'incorrect password')
     token = get_token(user.asdict())
     return http_ok(user.asdict(), jwt=token)
 
@@ -46,7 +46,26 @@ def me_patch(token_data, data):
     user = User.query.filter_by(id=token_data['id']).first()
     username = data.get('username')
     email = data.get('email')
-    password = data.get('password')
+    password = data.get('new_password')
     if username:
-        user.username
+        user.username = username
+        if user.username_exists():
+            return http_err(404, 'user with given username already exists')
+    if email:
+        user.email = email
+        if user.email_exists():
+            return http_err(404, 'user with given email already exists')
+    if password:
+        old_password = data.get('old_password')
+        if not old_password:
+            return http_err(400, 'old password not given')
+        if not user.verify_password(old_password):
+            return http_err(401, 'old password did not match')
+        user.password = password
+
+
+    db.session.add(user)
+    db.session.commit()
+    return http_ok(user.asdict())
+
 
