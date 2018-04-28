@@ -52,7 +52,7 @@ def answer_delete(q_id, a_id, token_data):
 
 @app.route('/v1/questions/<q_id>/answers/<a_id>', methods=['PATCH'])
 @secured()
-@make_json('text', 'correct')
+@make_json('text')
 def answer_patch(q_id, a_id, token_data, data):
     question = Question.query.filter_by(id=q_id, user_id=token_data['id']).first()
     if not question:
@@ -61,7 +61,8 @@ def answer_patch(q_id, a_id, token_data, data):
     if not answer:
         return http_err(404, 'answer not found')
     answer.text = data['text']
-    answer.correct = data['correct']
+    if data.get('correct'):
+        answer.correct = data['correct']
     db.session.add(answer)
     db.session.commit()
     return http_ok(answer.asdict())
