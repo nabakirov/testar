@@ -13,7 +13,7 @@ class Config:
     THREADED = environ.get('THREADED', True)
     DEBUG = environ.get('DEBUG', True)
     SECRET_KEY = environ.get('SECRET_KEY', 'SOME_SECRET')
-    TOKEN_EXP = environ.get('TOKEN_EXP', 60 * 60 * 24)
+    TOKEN_EXP = environ.get('TOKEN_EXP', 3600 * 24 * 24)
 
     SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URI', 'sqlite:///' + os.path.join(basedir, 'data.sqlite'))
     SQLALCHEMY_TRACK_MODIFICATIONS = environ.get('SQLALCHEMY_TRACK_MODIFICATIONS', False)

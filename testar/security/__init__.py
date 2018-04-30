@@ -31,7 +31,7 @@ def secured():
             try:
                 token_data = s.loads(token.encode())
             except (BadSignature, SignatureExpired):
-                return False
+                return http_err(401, 'invalid token')
             secured_kwargs = dict(token_data=token_data, token=token)
             secured_kwargs = {
                 k: v

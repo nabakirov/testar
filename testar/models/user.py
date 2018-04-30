@@ -1,5 +1,6 @@
 from testar import db
 from passlib.hash import pbkdf2_sha256
+from time import time as now
 
 
 class User(db.Model):
@@ -7,8 +8,10 @@ class User(db.Model):
     username = db.Column(db.String(), unique=True, nullable=False)
     email = db.Column(db.String(), unique=True, nullable=False)
     pwd_hash = db.Column(db.String(), nullable=False)
+    registered = db.Column(db.Float, default=now())
 
     questions = db.relationship('Question', backref='user', lazy=True)
+    tests = db.relationship('Test', lazy=True)
 
     @property
     def password(self):
@@ -24,12 +27,3 @@ class User(db.Model):
     def asdict(self):
         return dict(id=self.id, username=self.username, email=self.email)
 
-    def email_exists(self):
-        if self.query.filter_by(email=self.email).first():
-            return True
-        return False
-
-    def username_exists(self):
-        if self.query.filter_by(username=self.username).first():
-            return True
-        return False

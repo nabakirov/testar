@@ -2,10 +2,8 @@ from flask import jsonify, request
 import functools as FT
 
 
-def http_ok(data: dict, message='ok', code=200, **kwargs):
-    if not isinstance(data, dict):
-        raise TypeError('data must be dict')
-    data.update(dict(message=message, code=code))
+def http_ok(message='ok', code=200, **kwargs):
+    data = dict(code=code, message=message)
     data.update(kwargs)
     return jsonify(data), code
 

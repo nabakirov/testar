@@ -14,7 +14,7 @@ def answer_post(data, token_data, q_id):
     answer = Answers(text=data['text'], correct=data['correct'], question_id=question.id)
     db.session.add(answer)
     db.session.commit()
-    return http_ok(answer.asdict())
+    return http_ok(**answer.asdict())
 
 
 @app.route('/v1/questions/<q_id>/answers/<a_id>')
@@ -23,7 +23,7 @@ def answer_get(token_data, q_id, a_id):
     answer = Question.query.filter_by(id=q_id, user_id=token_data['id']).first().answers.query.filter_by(id=a_id).first()
     if not answer:
         return http_err(404, 'answer not found')
-    return http_ok(answer.asdict())
+    return http_ok(**answer.asdict())
 
 
 @app.route('/v1/questions/<q_id>/answers', methods=['GET'])
@@ -33,7 +33,7 @@ def answers_get(q_id, token_data):
     if not question:
         return http_err(404, 'question not found')
     answers = [a.asdict() for a in question.answers]
-    return http_ok(dict(answers=answers))
+    return http_ok(answers=answers)
 
 
 @app.route('/v1/questions/<q_id>/answers/<a_id>', methods=['DELETE'])
@@ -47,7 +47,7 @@ def answer_delete(q_id, a_id, token_data):
         return http_err(404, 'answer not found')
     db.session.delete(answer)
     db.session.commit()
-    return http_ok(answer.asdict())
+    return http_ok(**answer.asdict())
 
 
 @app.route('/v1/questions/<q_id>/answers/<a_id>', methods=['PATCH'])
@@ -65,4 +65,4 @@ def answer_patch(q_id, a_id, token_data, data):
         answer.correct = data['correct']
     db.session.add(answer)
     db.session.commit()
-    return http_ok(answer.asdict())
+    return http_ok(**answer.asdict())
