@@ -6,7 +6,7 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
     created = db.Column(db.Float, default=int(now()))
-    answers = db.relationship('Answers', backref='question', lazy=True)
+    answers = db.relationship('Answers', lazy=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def asdict(self):

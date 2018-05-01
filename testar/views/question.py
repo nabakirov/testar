@@ -77,11 +77,11 @@ def question_delete(id, token, token_data):
     question = Question.query.filter_by(user_id=token_data['id'], id=id).first()
     if not question:
         return http_err(404, 'not found')
-    db.session.delete(question)
     ans = []
     for a in question.answers:
         db.session.delete(a)
         ans.append(a.asdict())
+    db.session.delete(question)
     db.session.commit()
     return http_ok(**question.asdict(), answers=ans)
 

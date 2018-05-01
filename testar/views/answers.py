@@ -20,7 +20,10 @@ def answer_post(data, token_data, q_id):
 @app.route('/v1/questions/<q_id>/answers/<a_id>')
 @secured()
 def answer_get(token_data, q_id, a_id):
-    answer = Question.query.filter_by(id=q_id, user_id=token_data['id']).first().answers.query.filter_by(id=a_id).first()
+    question = Question.query.filter_by(id=q_id, user_id=token_data['id']).first()
+    if not question:
+        return http_err(404, 'question not found')
+    answer = Answers.query.filter_by(question_id=question.id, id=a_id).first()
     if not answer:
         return http_err(404, 'answer not found')
     return http_ok(**answer.asdict())
@@ -42,7 +45,7 @@ def answer_delete(q_id, a_id, token_data):
     question = Question.query.filter_by(id=q_id, user_id=token_data['id']).first()
     if not question:
         return http_err(404, 'question not found')
-    answer = question.query.filter_by(id=a_id)
+    answer = Answers.query.filter_by(question_id=question.id, id=a_id).first()
     if not answer:
         return http_err(404, 'answer not found')
     db.session.delete(answer)
@@ -52,15 +55,19 @@ def answer_delete(q_id, a_id, token_data):
 
 @app.route('/v1/questions/<q_id>/answers/<a_id>', methods=['PATCH'])
 @secured()
-@make_json('text')
+@make_json()
 def answer_patch(q_id, a_id, token_data, data):
+    for k, v in data.items():
+        if k not in ['text', 'correct']:
+            return http_err(400, 'unknown parameter {}'.format(k))
     question = Question.query.filter_by(id=q_id, user_id=token_data['id']).first()
     if not question:
         return http_err(404, 'question not found')
-    answer = question.query.filter_by(id=a_id).first()
+    answer = Answers.query.filter_by(question_id=question.id, id=a_id).first()
     if not answer:
         return http_err(404, 'answer not found')
-    answer.text = data['text']
+    if data.get('text'):
+        answer.text = data['text']
     if data.get('correct'):
         answer.correct = data['correct']
     db.session.add(answer)
