@@ -14,22 +14,16 @@ def tests_get(token_data):
 
 @app.route('/v1/tests', methods=['POST'])
 @secured()
-@make_json('questions', 'title', 'start_date', 'end_date')
+@make_json('questions', 'title')
 def tests_post(data, token_data):
-    if not isinstance(data['start_date'], (int, float)):
-        return http_err(400, 'start_date must be timestamp unix format')
-    if not isinstance(data['end_date'], (int, float)):
-        return http_err(400, 'end_date must be timestamp unix format')
     if not isinstance(data['questions'], list):
         return http_err(400, 'questions must be array of question ids')
-    if data['end_date'] < data['start_date']:
-        return http_err(400, 'specify correct end_date *hint greater than start_date')
     for q_id in data['questions']:
         if not isinstance(q_id, int):
             return http_err(400, 'questions must be array of question ids')
     params = {
         k: v
-        for k, v in data.items() if k in ['start_date', 'end_date', 'title', 'subtitle', 'description']
+        for k, v in data.items() if k in ['title', 'description']
     }
     test = Test(**params, owner=token_data['id'], )
 

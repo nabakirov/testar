@@ -5,11 +5,12 @@ from time import time as now
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(), unique=True, nullable=False)
-    email = db.Column(db.String(), unique=True, nullable=False)
+    username = db.Column(db.String(), unique=True, nullable=False, index=True)
+    email = db.Column(db.String(), unique=True, nullable=False, index=True)
     pwd_hash = db.Column(db.String(), nullable=False)
     registered = db.Column(db.Float, default=now())
 
+    competitions = db.relationship('Participant', backref='user', lazy=True)
     questions = db.relationship('Question', backref='user', lazy=True)
     tests = db.relationship('Test', lazy=True)
 

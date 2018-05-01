@@ -4,7 +4,7 @@ from time import time as now
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.Text, nullable=False)
+    text = db.Column(db.Text, nullable=False, index=True)
     created = db.Column(db.Float, default=int(now()))
     answers = db.relationship('Answers', lazy=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

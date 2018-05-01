@@ -25,9 +25,9 @@ def user_login(data):
 @app.route('/v1/register', methods=['POST'])
 @make_json('username', 'email', 'password')
 def user_register(data):
-    if User.query.filter_by(email=data['email']):
+    if User.query.filter_by(email=data['email']).first():
         return http_err(404, 'user with given email already exists')
-    if User.query.filter_by(username=data['username']):
+    if User.query.filter_by(username=data['username']).first():
         return http_err(404, 'user with given username already exists')
     new_user = User(username=data['username'], email=data['email'], password=data['password'])
     db.session.add(new_user)
