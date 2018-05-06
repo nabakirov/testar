@@ -4,6 +4,6 @@ from .answers import *
 from .test import *
 from .competition import *
 from .participant import *
-
+from .submission import *
 
 from .templates import *

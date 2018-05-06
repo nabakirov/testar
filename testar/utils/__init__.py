@@ -1,5 +1,7 @@
 from flask import jsonify, request
 import functools as FT
+import random
+from copy import deepcopy
 
 
 def http_ok(message='ok', code=200, **kwargs):
@@ -32,3 +34,17 @@ def make_json(*args, **kwargs):
 
         return wrapper
     return wrapper_of_wrapper
+
+
+def mix(arr: list):
+    length = len(arr)
+    mixed = [None] * length
+    buffer = deepcopy(arr)
+    c = length - 1
+    for i, obj in enumerate(arr):
+        ri = random.randint(0, c)
+        mixed[i] = buffer[ri]
+        del(buffer[ri])
+        c -= 1
+    return mixed
+

@@ -1,9 +1,10 @@
 from testar import app
-from testar.models import User
+from testar.models import User, Competition, Submission, Test
 from flask import request
 from testar.utils import http_err, http_ok, make_json
 from testar import db
 from testar.security import get_token, secured
+from time import time as now
 
 
 @app.route('/v1/login', methods=['POST', 'GET'])
@@ -71,3 +72,34 @@ def me_patch(token_data, data):
     return http_ok(**user.asdict())
 
 
+@app.route('/v1/me/competitions')
+@secured()
+def me_competitions(token_data):
+    user = User.query.get(token_data['id'])
+    return http_ok(competitions=[c.asdict() for c in user.competitions])
+
+
+@app.route('/v1/me/competitions/<id>')
+@secured()
+def me_competition_submission(token_data, id):
+    user = User.query.get(token_data['id'])
+    competition = Competition.query.get(id)
+    if now() < competition.end_date:
+        return http_err(404, 'competition not finished yet')
+    if not competition:
+        return http_err(404, 'competition not found')
+    submissions = Submission.query.filter_by(user_id=user.id, competition_id=competition.id).all()
+    if not submissions:
+        return http_err(404, 'you have not submitted yet')
+
+    test = Test.query.get(competition.test_id)
+    questions = test.questions
+    q_dict = []
+    for question in questions:
+        answers = [a.asdict() for a in question.answers]
+        question = question.asdict()
+        question['answers'] = answers
+        q_dict.append(question)
+    test = test.asdict()
+    test['questions'] = q_dict
+    return http_ok(test=test, submission=[s.asdict() for s in submissions])

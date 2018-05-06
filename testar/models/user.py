@@ -1,6 +1,7 @@
 from testar import db
 from passlib.hash import pbkdf2_sha256
 from time import time as now
+from .competition import competition_participants
 
 
 class User(db.Model):
@@ -9,10 +10,9 @@ class User(db.Model):
     email = db.Column(db.String(), unique=True, nullable=False, index=True)
     pwd_hash = db.Column(db.String(), nullable=False)
     registered = db.Column(db.Float, default=now())
-
-    competitions = db.relationship('Participant', backref='user', lazy=True)
     questions = db.relationship('Question', backref='user', lazy=True)
     tests = db.relationship('Test', lazy=True)
+    competitions = db.relationship('Competition', secondary=competition_participants, lazy=True)
 
     @property
     def password(self):
