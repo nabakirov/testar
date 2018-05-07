@@ -5,7 +5,7 @@ from testar.models import Test, Competition, User
 
 
 @app.route('/v1/competitions')
-@secured()
+@secured('admin manager')
 def competitions_get(token_data):
     competitions = Competition.query.filter_by(user_id=token_data['id']).all()
     resp = [c.asdict() for c in competitions]
@@ -13,7 +13,7 @@ def competitions_get(token_data):
 
 
 @app.route('/v1/competitions/<id>')
-@secured()
+@secured('admin manager')
 def competition_get(token_data, id):
     competition = Competition.query.filter_by(user_id=token_data['id'], id=id).first()
     if not competition:
@@ -37,7 +37,7 @@ def competition_get(token_data, id):
 
 
 @app.route('/v1/competitions/<id>', methods=['PATCH'])
-@secured()
+@secured('admin manager')
 @make_json()
 def competition_patch(token_data, id, data):
     competition = Competition.query.filter_by(user_id=token_data['id'], id=id).first()
@@ -98,7 +98,7 @@ def competition_patch(token_data, id, data):
 
 
 @app.route('/v1/competitions', methods=['POST'])
-@secured()
+@secured('admin manager')
 @make_json('start_date', 'end_date', 'test', 'title')
 def competitions_post(data, token_data):
     if not isinstance(data['start_date'], (int, float)):

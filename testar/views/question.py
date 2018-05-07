@@ -6,7 +6,7 @@ from flask import request
 
 
 @app.route('/v1/questions', methods=['POST'])
-@secured()
+@secured('admin manager')
 @make_json('text', 'correct_answers', 'incorrect_answers')
 def questions_post(data, token_data):
     if not isinstance(data['incorrect_answers'], list):
@@ -51,7 +51,7 @@ def questions_post(data, token_data):
 
 
 @app.route('/v1/questions')
-@secured()
+@secured('admin manager')
 def questions_get(token_data):
     questions = Question.query.filter_by(user_id=token_data['id']).all()
     resp = [q.asdict() for q in questions]
@@ -62,7 +62,7 @@ def questions_get(token_data):
 
 
 @app.route('/v1/questions/<id>', methods=['GET'])
-@secured()
+@secured('admin manager')
 def question_get(id, token_data):
     question = Question.query.filter_by(user_id=token_data['id'], id=id).first()
     if not question:
@@ -72,7 +72,7 @@ def question_get(id, token_data):
 
 
 @app.route('/v1/questions/<id>', methods=['DELETE'])
-@secured()
+@secured('admin manager')
 def question_delete(id, token, token_data):
     question = Question.query.filter_by(user_id=token_data['id'], id=id).first()
     if not question:
@@ -87,7 +87,7 @@ def question_delete(id, token, token_data):
 
 
 @app.route('/v1/questions/<id>', methods=['PATCH'])
-@secured()
+@secured('admin manager')
 @make_json('text')
 def question_patch(id, token_data, data):
     question = Question.query.filter_by(user_id=token_data['id'], id=id).first()

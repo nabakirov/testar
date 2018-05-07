@@ -5,7 +5,7 @@ from testar.models import Competition, User, Submission
 
 
 @app.route('/v1/competitions/<id>/participants')
-@secured()
+@secured('admin manager')
 def participants_get(id, token_data):
     competition = Competition.query.filter_by(id=id, user_id=token_data['id']).first()
     if not competition:
@@ -19,9 +19,8 @@ def participants_get(id, token_data):
     return http_ok(participants=users)
 
 
-
 @app.route('/v1/competitions/<id>/participants', methods=['POST'])
-@secured()
+@secured('admin manager')
 @make_json('users')
 def participants_post(data, token_data, id):
     return 'todo'

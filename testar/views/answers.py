@@ -5,7 +5,7 @@ from testar.security import secured
 
 
 @app.route('/v1/questions/<q_id>/answers', methods=['POST'])
-@secured()
+@secured('admin manager')
 @make_json('text')
 def answer_post(data, token_data, q_id):
     question = Question.query.filter_by(id=q_id, user_id=token_data['id']).first()
@@ -18,7 +18,7 @@ def answer_post(data, token_data, q_id):
 
 
 @app.route('/v1/questions/<q_id>/answers/<a_id>')
-@secured()
+@secured('admin manager')
 def answer_get(token_data, q_id, a_id):
     question = Question.query.filter_by(id=q_id, user_id=token_data['id']).first()
     if not question:
@@ -30,7 +30,7 @@ def answer_get(token_data, q_id, a_id):
 
 
 @app.route('/v1/questions/<q_id>/answers', methods=['GET'])
-@secured()
+@secured('admin manager')
 def answers_get(q_id, token_data):
     question = Question.query.filter_by(id=q_id, user_id=token_data['id']).first()
     if not question:
@@ -40,7 +40,7 @@ def answers_get(q_id, token_data):
 
 
 @app.route('/v1/questions/<q_id>/answers/<a_id>', methods=['DELETE'])
-@secured()
+@secured('admin manager')
 def answer_delete(q_id, a_id, token_data):
     question = Question.query.filter_by(id=q_id, user_id=token_data['id']).first()
     if not question:
@@ -54,7 +54,7 @@ def answer_delete(q_id, a_id, token_data):
 
 
 @app.route('/v1/questions/<q_id>/answers/<a_id>', methods=['PATCH'])
-@secured()
+@secured('admin manager')
 @make_json()
 def answer_patch(q_id, a_id, token_data, data):
     for k, v in data.items():

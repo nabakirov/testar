@@ -61,7 +61,6 @@ def submission_post(id, data, token_data):
     if submitted:
         return http_err(400, 'you have already submitted', submission=[s.asdict() for s in submitted])
     corrects = test.corrects()
-    response = []
     correct_count = 0
     for selected in data['questions']:
         if not selected.get('question') or 'answer' not in selected:
@@ -76,7 +75,6 @@ def submission_post(id, data, token_data):
         if selected['answer'] in corrects[selected['question']]:
             correct_count += 1
         selected['corrects'] = corrects[selected['question']]
-        response.append(selected)
     db.session.commit()
-    return http_ok(questions=response, corrects=correct_count, total=len(data['questions']))
+    return http_ok(corrects=correct_count, total=len(data['questions']))
 

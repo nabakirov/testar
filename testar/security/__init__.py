@@ -13,7 +13,20 @@ def get_token(data: dict, exp=Config.TOKEN_EXP):
     return s.dumps(data).decode()
 
 
-def secured():
+SCOPES = {'admin', 'manager'}
+
+
+def secured(scopes=None):
+    if scopes:
+        if isinstance(scopes, str):
+            scopes = scopes.split()
+        elif not isinstance(scopes, list):
+            raise TypeError('scopes must be iterable')
+        for role in scopes:
+            if role not in SCOPES:
+                raise ValueError('unknown role, admin manager available')
+        scopes = set(scopes)
+
     def wrapper_of_wrapper(f):
         params = signature(f).parameters
         secured_keys = {'token_data', 'token'}.intersection(params.keys())
@@ -32,6 +45,13 @@ def secured():
                 token_data = s.loads(token.encode())
             except (BadSignature, SignatureExpired):
                 return http_err(401, 'invalid token')
+            if scopes:
+                t_scopes = token_data.get('scopes')
+                if not t_scopes:
+                    return http_err(403, 'forbidden')
+                t_scopes = set(t_scopes)
+                if not scopes.intersection(t_scopes):
+                    return http_err(403, 'forbidden')
             secured_kwargs = dict(token_data=token_data, token=token)
             secured_kwargs = {
                 k: v

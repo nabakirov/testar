@@ -5,7 +5,7 @@ from testar.models import Test, Question
 
 
 @app.route('/v1/tests')
-@secured()
+@secured('admin manager')
 def tests_get(token_data):
     tests = Test.query.filter_by(owner=token_data['id']).all()
     data = [t.asdict() for t in tests]
@@ -13,7 +13,7 @@ def tests_get(token_data):
 
 
 @app.route('/v1/tests', methods=['POST'])
-@secured()
+@secured('admin manager')
 @make_json('questions', 'title')
 def tests_post(data, token_data):
     if not isinstance(data['questions'], list):
@@ -38,7 +38,7 @@ def tests_post(data, token_data):
 
 
 @app.route('/v1/tests/<id>')
-@secured()
+@secured('admin manager')
 def test_get(id, token_data):
     test = Test.query.filter_by(id=id, owner=token_data['id']).first()
     if not test:
@@ -55,7 +55,7 @@ def test_get(id, token_data):
 
 
 @app.route('/v1/tests/<id>', methods=['DELETE'])
-@secured()
+@secured('admin manager')
 def test_delete(id, token_data):
     test = Test.query.filter_by(id=id, owner=token_data['id']).first()
     if not test:

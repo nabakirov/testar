@@ -13,6 +13,8 @@ class User(db.Model):
     questions = db.relationship('Question', backref='user', lazy=True)
     tests = db.relationship('Test', lazy=True)
     competitions = db.relationship('Competition', secondary=competition_participants, lazy=True)
+    admin = db.Column(db.Boolean, default=False)
+    manager = db.Column(db.Boolean, default=False)
 
     @property
     def password(self):
@@ -26,5 +28,13 @@ class User(db.Model):
         return pbkdf2_sha256.verify(password, self.pwd_hash)
 
     def asdict(self):
-        return dict(id=self.id, username=self.username, email=self.email)
+        scopes = []
+        if self.admin:
+            scopes.append('admin')
+        if self.manager:
+            scopes.append('manager')
+        return dict(id=self.id,
+                    username=self.username,
+                    email=self.email,
+                    scopes=scopes)
 
