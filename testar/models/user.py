@@ -15,6 +15,7 @@ class User(db.Model):
     competitions = db.relationship('Competition', secondary=competition_participants, lazy=True)
     admin = db.Column(db.Boolean, default=False)
     manager = db.Column(db.Boolean, default=False)
+    groups = db.relationship('Group', lazy=True)
 
     @property
     def password(self):
