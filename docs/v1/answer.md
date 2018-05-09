@@ -1,20 +1,21 @@
 ### Save   
-Authorization: Bearer <token> (given in login, registration)   
+Authorization: Bearer *token* (given in login, registration)   
+access role: ***admin***, ***manager***   
 ***/v1/questions/<question_id>/answers***   
 ```javascript
 request
     POST
-        "text": "string" (Required)
-        "correct": "boolean"
+        "text": "string" // (Required)
+        "correct": "boolean" // (Required)
 response
-    "id": "int",
-    "correct": "boolean",
-    "text": "string",
-    "message": "str",
+    Answer (*)
+    "message": "str"
     "status": "int"
 ```   
+[Answer](/docs/v1/objects.md#answer)   
 ### Update   
-Authorization: Bearer <token> (given in login, registration)   
+Authorization: Bearer *token* (given in login, registration)   
+access role: ***admin***, ***manager***   
 ***/v1/questions/<question_id>/answers/<answer_id>***   
 ```javascript
 request
@@ -22,40 +23,37 @@ request
         "text": "string" (Optional),
         "correct": "boolean" (Optional)
 response
-    "id": "int",
-    "correct": "boolean",
-    "text": "string",
-    "message": "str",
+    Answer (*)
+    "message": "str"
     "status": "int"
 ```   
+[Answer](/docs/v1/objects.md#answer)   
 ### Delete   
-Authorization: Bearer <token> (given in login, registration)   
+Authorization: Bearer *token* (given in login, registration)   
+access role: ***admin***, ***manager***   
 ***/v1/questions/<question_id>/answers/<answer_id>***   
 ```javascript
 request
     DELETE
 response
-    "id": "int",
-    "correct": "boolean",
-    "text": "string",
-    "message": "str",
+    Answer (*)
+    "message": "str"
     "status": "int"
 ```   
+[Answer](/docs/v1/objects.md#answer)   
 ### List   
-Authorization: Bearer <token> (given in login, registration)   
+Authorization: Bearer *token* (given in login, registration)   
+access role: ***admin***, ***manager***   
 ***/v1/questions/<question_id>/answers***   
 ```javascript
 request
     GET
 response
     "answers": [
-        {  
-            "id": "int",
-            "correct": "boolean",
-            "text": "string"
-        },
+        Answer (*)
         ...,
     ] //array of dictionaries
     "message": "str",
     "status": "int"
 ```   
+[Answer](/docs/v1/objects.md#answer)   
