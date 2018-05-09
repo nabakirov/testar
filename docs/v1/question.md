@@ -1,103 +1,89 @@
 ### Save   
-Authorization: Bearer <token> (given in login, registration)   
+Authorization: Bearer <token> (given in login, registration)
+access role: ***admin***, ***manager***
 ***/v1/questions***   
 ```javascript
 request
     POST
-        "text": "string" (Required)
-        "correct_answers": ["string", "string", ..., ] (Required) //[array of strings]
-        "incorrect_answers": ["string", "string", ..., ] (Required) //[array of strings]
+        "text": "string" // (Required)
+        "correct_answers": ["string", "string", ..., ] // (Required) array of strings
+        "incorrect_answers": ["string", "string", ..., ] // (Required) array of strings
 response
-    "question": {
-        "created": "float" //[unix timestamp],
-        "id": "int",
-        "text": "string"
-    } [dictionary],
+    Question(*)
     "answers": [
-        {  
-            "id": "int",
-            "correct": "boolean",
-            "text": "string"
-        },
+        Answer (*)
         ...,
-    ] //array of dictionaries
-    
-    "message": "str",
+    ]
+    "message": "str"
     "status": "int"
-```   
+```
+[Question](/docs/v1/objects.md#question)
+[Answer](/docs/v1/objects.md#answer)
 ### Update   
-Authorization: Bearer <token> (given in login, registration)   
+Authorization: Bearer <token> (given in login, registration)
+access role: ***admin***, ***manager***
 ***/v1/questions/<id>***   
 ```javascript
 request
     PATCH
         "text": "string" (Required)
 response
-    "created": "float" //[unix timestamp],
-    "id": "int",
-    "text": "string"
-    "message": "str",
+    Question(*)
+    "message": "str"
     "status": "int"
-```   
+```
+[Question](/docs/v1/objects.md#question)
 ### Delete   
-Authorization: Bearer <token> (given in login, registration)   
+Authorization: Bearer <token> (given in login, registration)
+access role: ***admin***, ***manager***
 ***/v1/questions/<id>***   
 ```javascript
 request
     DELETE
 response
-    "question": {
-        "created": "float" // unix timestamp,
-        "id": "int",
-        "text": "string"
-    } // dictionary,
+    Question(*)
     "answers": [
-        {  
-            "id": "int",
-            "correct": "boolean",
-            "text": "string"
-        },
-        ...,
-    ] //array of dictionaries
-    "message": "str",
+        Answer(*),
+        ...
+    ]
+    "message": "str"
     "status": "int"
-```   
+```
+[Question](/docs/v1/objects.md#question)
+[Answer](/docs/v1/objects.md#answer)
 ### List   
-Authorization: Bearer <token> (given in login, registration)   
+Authorization: Bearer <token> (given in login, registration)
+access role: ***admin***, ***manager***
 ***/v1/questions***   
 ```javascript
 request
     GET
 response
     "questions": [
-        {
-            "created": "float" //[unix timestamp],
-            "id": "int",
-            "text": "string"
-        },
+        Question (*)
         ...,
-    ] // array of dictionaries
-    "message": "str",
+    ]
+    "message": "str"
     "status": "int"
-```   
+```
+[Question](/docs/v1/objects.md#question)
 ### One   
-Authorization: Bearer <token> (given in login, registration)   
+Authorization: Bearer <token> (given in login, registration)
+access role: ***admin***, ***manager***
 ***/v1/questions/<id>***   
 ```javascript
 request
     GET
 response
-    "created": "float" //[unix timestamp],
-    "id": "int",
-    "text": "string",
+    Question(*)
     "answers": [
-        {  
-            "id": "int",
-            "correct": "boolean",
-            "text": "string"
-        },
-        ...,
-    ] //array of dictionaries
+        Answer(*),
+        ...
+    ]
     "message": "str",
     "status": "int"
 ```   
+[Question](/docs/v1/objects.md#question)
+[Answer](/docs/v1/objects.md#answer)
+
+

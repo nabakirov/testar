@@ -50,7 +50,10 @@ def add_fake(number_users):
 
             username=fake.first_name(),
             email=fake.email(),
-            password='password')
+            password='password',
+            first_name=fake.first_name(),
+            last_name=fake.last_name()
+        )
         db.session.add(u)
         try:
             db.session.commit()

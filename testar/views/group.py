@@ -1,16 +1,16 @@
 from testar import app, db
-from testar.models import Group, Question, User
+from testar.models import Group, Question, User, GroupsGroups
 from testar.security import secured
 from testar.utils import make_json, http_err, http_ok
 from flask import request
 
 
-def group_available(id, entry_group: Group):
-    if entry_group.id == id:
+def group_available(id: int, entry: int):
+    if id == entry:
         return False
-    groups = Group.query.filter_by(group_id=entry_group.id).all()
+    groups = GroupsGroups.query.filter_by(group=entry).all()
     for group in groups:
-        if not group_available(id, group):
+        if not group_available(id, group.entry):
             return False
     return True
 
@@ -21,7 +21,7 @@ def group_available(id, entry_group: Group):
 def grouping(data, token_data):
     if data.get('group'):
         if not isinstance(data['group'], int):
-            return http_err(400, 'group must be int, question id')
+            return http_err(400, 'group must be int')
     else:
         return http_err(400, 'group parameter is missing')
     group = Group.query.filter_by(id=data['group'], user_id=token_data['id']).first()
@@ -35,19 +35,21 @@ def grouping(data, token_data):
         resp = []
 
         for q_id in data['questions']:
-            question = Question.query.filter_by(id=q_id, user_id=token_data['id'])
+            question = Question.query.filter_by(id=q_id, user_id=token_data['id']).first()
             if not question:
-                return http_err(404, 'question not found')
+                return http_err(404, 'question {} not found'.format(q_id))
             if request.method == 'POST':
-                question.group_id = group.id
+                if question not in group.questions:
+                    group.questions.append(question)
             else:
-                question.group_id = None
-            db.session.add(question)
+                if question in group.questions:
+                    group.questions.remove(question)
+            db.session.add(group)
             resp.append(question.asdict())
 
 
         db.session.commit()
-        return http_ok(group=group.asdict(), question=resp)
+        return http_ok(**group.asdict(), question=resp)
 
     if data.get('entry_group'):
         if not isinstance(data['entry_group'], (int, list)):
@@ -59,17 +61,21 @@ def grouping(data, token_data):
             entry_group = Group.query.filter_by(id=g_id, user_id=token_data['id']).first()
             if not entry_group:
                 return http_err(404, 'entry_group not found')
-            if not group_available(group.id, entry_group):
+            if not group_available(group.id, entry_group.id):
                 return http_err(400, 'recursion error')
+            group_group = GroupsGroups.query.filter_by(group=group.id, entry=entry_group.id).first()
             if request.method == 'POST':
-                entry_group.group_id = group.id
+                if not group_group:
+                    group_group = GroupsGroups(group=group.id, entry=entry_group.id)
+                    db.session.add(group_group)
             else:
-                entry_group.group_id = None
+                if group_group:
+                    db.session.delete(group_group)
 
-            db.session.add(entry_group)
             resp.append(entry_group.asdict())
         db.session.commit()
-        return http_ok(group=group.asdict(), entry_group=resp)
+        return http_ok(**group.asdict(), entry_group=resp)
+    return http_err(400, 'questions or entry_group parameter is missing')
 
 
 @app.route('/v1/groups', methods=['POST'])
@@ -83,10 +89,8 @@ def groups_post(data, token_data):
         group = Group(title=data['title'], description=data['description'], user_id=token_data['id'])
     else:
         group = Group(title=data['title'], user_id=token_data['id'])
-    db.session.add(group)
-    db.session.commit()
+    unknowns = []
     if data.get('questions'):
-        unknowns = []
         if not isinstance(data['questions'], list):
             return http_err(400, 'questions parameter must be array')
         for q_id in data['questions']:
@@ -94,26 +98,37 @@ def groups_post(data, token_data):
             if not question:
                 unknowns.append(q_id)
                 continue
-            question.group_id = group
-            db.session.add(question)
-        db.session.commit()
+            group.questions.append(question)
+    if data.get('users'):
+        if not isinstance(data['users'], list):
+            return http_err(400, 'users parameter must be array')
+        for u_id in data['users']:
+            user = User.query.get(u_id)
+            if not user:
+                unknowns.append(u_id)
+                continue
+            group.users.append(user)
+    db.session.add(group)
+    db.session.commit()
     return http_ok(**group.asdict())
 
 
 @app.route('/v1/groups')
 @secured('manager admin')
 def groups_get(token_data):
-    user = User.query.get(token_data['id'])
-    groups = [g.asdict() for g in user.groups]
+    groups = Group.query.filter_by(user_id=token_data['id']).all()
+    groups = [g.asdict() for g in groups]
     return http_ok(groups=groups)
 
 
-def get_group_tree(group: Group):
-    groups = Group.query.filter_by(group_id=group.id).all()
-    questions = Question.query.filter_by(group_id=group.id)
+def get_group_tree(group):
+    group_ids = GroupsGroups.query.filter_by(group=group.id).all()
     g_dict = group.asdict()
-    g_dict['questions'] = [q.asdict() for q in questions]
-    g_dict['groups'] = [get_group_tree(g) for g in groups]
+    g_dict['questions'] = [q.asdict() for q in group.questions]
+    g_dict['groups'] = []
+    for group_id in group_ids:
+        entry = Group.query.filter_by(id=group_id.entry).first()
+        g_dict['groups'].append(get_group_tree(entry))
     return g_dict
 
 
@@ -124,3 +139,8 @@ def group_get(token_data, id):
     if not group:
         return http_err(404, 'group not found')
     return http_ok(**get_group_tree(group))
+
+# @app.route('/v1/groups/<id>', methods=['DELETE'])
+# @secured('manager admin')
+# def group_delete(id, token_data):
+#     group =

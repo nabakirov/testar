@@ -9,7 +9,7 @@ class Question(db.Model):
     created = db.Column(db.Float, default=int(now()))
     answers = db.relationship('Answers', lazy=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    group_id = db.Column(db.Integer, nullable=True)
+    # group_id = db.Column(db.Integer, nullable=True)
 
     def asdict(self, with_created=True):
         a = dict(id=self.id, text=self.text)

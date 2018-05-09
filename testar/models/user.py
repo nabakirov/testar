@@ -17,6 +17,11 @@ class User(db.Model):
     manager = db.Column(db.Boolean, default=False)
     groups = db.relationship('Group', lazy=True)
 
+    first_name = db.Column(db.String(20), nullable=False)
+    last_name = db.Column(db.String(20), nullable=False)
+
+    # group_id = db.Column(db.Integer, nullable=True)
+
     @property
     def password(self):
         raise AttributeError('`password` is not a readable attribute')
@@ -36,6 +41,8 @@ class User(db.Model):
             scopes.append('manager')
         return dict(id=self.id,
                     username=self.username,
+                    first_name=self.first_name,
+                    last_name=self.last_name,
                     email=self.email,
                     scopes=scopes)
 
