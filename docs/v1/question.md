@@ -1,6 +1,6 @@
 ### Save   
-Authorization: Bearer <token> (given in login, registration)
-access role: ***admin***, ***manager***
+Authorization: Bearer *token* (given in login, registration)   
+access role: ***admin***, ***manager***   
 ***/v1/questions***   
 ```javascript
 request
@@ -17,11 +17,11 @@ response
     "message": "str"
     "status": "int"
 ```
-[Question](/docs/v1/objects.md#question)
+[Question](/docs/v1/objects.md#question)   
 [Answer](/docs/v1/objects.md#answer)
 ### Update   
-Authorization: Bearer <token> (given in login, registration)
-access role: ***admin***, ***manager***
+Authorization: Bearer *token* (given in login, registration)   
+access role: ***admin***, ***manager***   
 ***/v1/questions/<id>***   
 ```javascript
 request
@@ -34,8 +34,8 @@ response
 ```
 [Question](/docs/v1/objects.md#question)
 ### Delete   
-Authorization: Bearer <token> (given in login, registration)
-access role: ***admin***, ***manager***
+Authorization: Bearer *token* (given in login, registration)    
+access role: ***admin***, ***manager***   
 ***/v1/questions/<id>***   
 ```javascript
 request
@@ -49,11 +49,11 @@ response
     "message": "str"
     "status": "int"
 ```
-[Question](/docs/v1/objects.md#question)
+[Question](/docs/v1/objects.md#question)   
 [Answer](/docs/v1/objects.md#answer)
 ### List   
-Authorization: Bearer <token> (given in login, registration)
-access role: ***admin***, ***manager***
+Authorization: Bearer *token* (given in login, registration)   
+access role: ***admin***, ***manager***   
 ***/v1/questions***   
 ```javascript
 request
@@ -68,8 +68,8 @@ response
 ```
 [Question](/docs/v1/objects.md#question)
 ### One   
-Authorization: Bearer <token> (given in login, registration)
-access role: ***admin***, ***manager***
+Authorization: Bearer *token* (given in login, registration)   
+access role: ***admin***, ***manager***   
 ***/v1/questions/<id>***   
 ```javascript
 request
@@ -83,7 +83,7 @@ response
     "message": "str",
     "status": "int"
 ```   
-[Question](/docs/v1/objects.md#question)
+[Question](/docs/v1/objects.md#question)   
 [Answer](/docs/v1/objects.md#answer)
 
 

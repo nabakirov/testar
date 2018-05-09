@@ -1,5 +1,5 @@
 ### login   
-Authorization: Bearer <token> (given in login, registration)    
+Authorization: Bearer *token* (given in login, registration)    
 access role: ***public***   
 ***/v1/login***   
 ```javascript
@@ -15,7 +15,7 @@ response
 ```   
 [User](#user)   
 ### Registration   
-Authorization: Bearer <token> (given in login, registration)  
+Authorization: Bearer *token* (given in login, registration)  
 access role: ***public***   
 ***/v1/register***
 ```javascript
@@ -34,7 +34,7 @@ response
 ```   
 [User](#user)   
 ### Update   
-Authorization: Bearer <token> (given in login, registration)    
+Authorization: Bearer *token* (given in login, registration)    
 access role: ***public***   
 ***/v1/me***   
 ```javascript
@@ -51,7 +51,7 @@ response
 ```   
 [User](#user)    
 ### List   
-Authorization: Bearer <token> (given in login, registration)    
+Authorization: Bearer *token* (given in login, registration)    
 access role: ***admin***, ***manager***   
 ***/v1/users***   
 ```javascript
