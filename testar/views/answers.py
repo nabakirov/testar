@@ -6,7 +6,7 @@ from testar.security import secured
 
 @app.route('/v1/questions/<q_id>/answers', methods=['POST'])
 @secured('admin manager')
-@make_json('text')
+@make_json('text', 'correct')
 def answer_post(data, token_data, q_id):
     question = Question.query.filter_by(id=q_id, user_id=token_data['id']).first()
     if not question:

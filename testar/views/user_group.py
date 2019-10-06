@@ -18,7 +18,7 @@ def user_groups_post(data):
         group = Group(title=data['title'])
     if data.get('users'):
         if not isinstance(data['users'], list):
-            return http_err(400, 'questions parameter must be array')
+            return http_err(400, 'users parameter must be array')
         for u_id in data['users']:
             user = User.query.get(u_id)
             if not user:
